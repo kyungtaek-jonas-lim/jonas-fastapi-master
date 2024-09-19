@@ -21,7 +21,7 @@ Handy components on AWS (ECS, ECR)
 Follow these instructions to set up your development environment.
    - rename `Dockerfile-sample` to `Dockerfile`
    - rename `buildspec-sample.yml` to `buildspec.yml`
-   - modify `AWS_ACCOUNT_ID` in `buildspec.yml`
+   - modify `AWS_ACCOUNT_ID`, `AWS_REGION`, `ECR_REPOSITORY_NAME`, `ECS_CONTAINER_NAME` in `buildspec.yml`
 
 1. **Clone the repository:**
 
