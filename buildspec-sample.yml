@@ -7,11 +7,12 @@ phases:
     commands:
       - echo Log in to Amazon ECR YAML Custom...
       - export AWS_ACCOUNT_ID=111111111111
+      - export AWS_REGION=us-west-1
       - export ECR_REPOSITORY_NAME=jonas/jonas-fastapi-master
       - aws --version
-      - aws ecr get-login-password --region ap-northeast-2 | docker login --username
-        AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.ap-northeast-2.amazonaws.com
-      - export REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.ap-northeast-2.amazonaws.com/$ECR_REPOSITORY_NAME
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username
+        AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+      - export REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY_NAME
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - export IMAGE_TAG=${COMMIT_HASH:=latest}
       - echo The value of IMAGE_TAG is:$IMAGE_TAG

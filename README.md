@@ -14,7 +14,8 @@ Handy components on AWS (ECS, ECR)
 
 ## Features
 
-- TBD
+- Async
+- Scheduler (`apscheduler` - MIT License)
 
 ## Installation
 

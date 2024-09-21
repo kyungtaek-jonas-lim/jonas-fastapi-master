@@ -2,7 +2,7 @@ import asyncio
 import uuid
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException
-from ..services.basic_service import TaskStatus, tasks_status, long_running_back, executor, cpu_bound_task
+from ..services.async_service import TaskStatus, tasks_status, io_bound_task, executor, cpu_bound_task
 
 router = APIRouter()
 
@@ -11,10 +11,11 @@ def basic():
     return {"message": "succeeded in uploading!"}
 
 # =========================================================
-# ASYNC (Common)
+# ASYNC Result
 # =========================================================
+
 # Async Request
-@router.get("/async/result/{task_id}")
+@router.get("/result/{task_id}")
 def async_result(task_id: str):
 
     # get status
@@ -32,9 +33,13 @@ def async_result(task_id: str):
     return result
 
 
+# =========================================================
+# ASYNC (I/O-bound)
+# =========================================================
+
 # Async Request
-@router.get("/async/common")
-async def async_common_request(background_tasks: BackgroundTasks):
+@router.get("/io-bound")
+async def async_io_bound_request(background_tasks: BackgroundTasks):
 
     # generate ID (UUIDv4)
     task_id = str(uuid.uuid4())
@@ -47,7 +52,7 @@ async def async_common_request(background_tasks: BackgroundTasks):
         cnt += 1
 
     # async biz logic
-    background_tasks.add_task(long_running_back, task_id)
+    background_tasks.add_task(io_bound_task, task_id)
 
     # response
     result = {
@@ -58,12 +63,12 @@ async def async_common_request(background_tasks: BackgroundTasks):
 
 
 # =========================================================
-# ASYNC (Queue Thread)
+# ASYNC (CPU-bound) (Queue Thread)
 # =========================================================
 
 # Async Request
-@router.get("/async/queue-thread")
-async def async_queue_thread_request(background_tasks: BackgroundTasks):
+@router.get("/cpu-bound")
+async def async_cpu_bound_request():
 
     # generate ID (UUIDv4)
     task_id = str(uuid.uuid4())
