@@ -6,7 +6,10 @@ from app.scheduler import start_scheduler_async_io, start_scheduler_background, 
 
 app = FastAPI()
 
+# =========================================================
 # Add middleware
+# =========================================================
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=current_config.ORIGIN.split(","),
@@ -15,14 +18,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-print(current_config)
 
+# =========================================================
 # Include routers
-app.include_router(router)
-import os
-database_url = os.getenv('ORIGIN')
-print(database_url)
+# =========================================================
 
+app.include_router(router)
+
+
+# =========================================================
+# Basic Routes
+# =========================================================
+
+# Health Check
 @app.get("/health_check")
 def read_root():
     response = {
@@ -31,11 +39,22 @@ def read_root():
     }
     return response
 
+
+# =========================================================
+# App Event
+# =========================================================
+
 @app.on_event("startup")
 async def startup_event():
-    start_scheduler_async_io()
-    start_scheduler_background()
+    if current_config.SCHEDULER:
+        print("Schedulers are activated")
+        start_scheduler_async_io()
+        start_scheduler_background()
+    else:
+        print("Schedulers are deactivated")
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    shutdown_scheduler()
+    if current_config.SCHEDULER:
+        shutdown_scheduler()
+        print("Shutdown schedulers")

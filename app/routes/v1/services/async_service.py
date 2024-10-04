@@ -22,6 +22,11 @@ import time
 # =========================================================
 # ASYNC
 # =========================================================
+# Async Type
+class AsyncType(Enum):
+    IO_BOUND = "IO_BOUND"
+    CPU_BOUND = "CPU_BOUND"
+
 # Task Status
 class TaskStatus(Enum):
     ACCEPTED = "ACCEPTED"

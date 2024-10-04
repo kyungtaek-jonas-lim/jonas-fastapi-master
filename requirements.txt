@@ -1,3 +1,5 @@
 fastapi==0.95.0
 uvicorn==0.21.0
 apscheduler==3.10.4
+boto3==1.35.30
+python-multipart==0.0.12

@@ -30,6 +30,7 @@ class AppEnvironment(Enum):
 class EnvVariables(Enum):
     APP_ENV = ("APP_ENV", AppEnvironment.DEV.value)
     ORIGIN = ("ORIGIN", "*")  # Default to "*" for allowing all origins
+    SCHEDULER = ("SCHEDULER", "True") # Default to true for activating schedulers
 
     def __new__(cls, key, default):
         obj = object.__new__(cls)
@@ -56,6 +57,7 @@ class Config(metaclass=SingletonMeta):
     DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")
     SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey")
     ORIGIN = os.getenv(EnvVariables.ORIGIN.key, EnvVariables.ORIGIN.default)
+    SCHEDULER: bool = True if os.getenv(EnvVariables.SCHEDULER.key, EnvVariables.SCHEDULER.default) and os.getenv(EnvVariables.SCHEDULER.key, EnvVariables.SCHEDULER.default).lower() == "true" else False
 
     def __str__(self):
         # Define the string representation of the Config object
@@ -65,6 +67,7 @@ class Config(metaclass=SingletonMeta):
                 f"  DATABASE_URL={self.DATABASE_URL},\n"
                 f"  SECRET_KEY={self.SECRET_KEY},\n"
                 f"  ORIGIN={self.ORIGIN}\n"
+                f"  ORIGIN={self.SCHEDULER}\n"
                 f")")
 
 class DevConfig(Config):
