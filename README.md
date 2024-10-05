@@ -15,7 +15,19 @@ Handy components on AWS (ECS, ECR)
 ## Features
 
 - Async
-- Scheduler (`apscheduler` - MIT License)
+- Scheduler
+  - `apscheduler`
+    - MIT License
+- File
+  - `boto3` (S3)
+    - Apache License 2.0
+  - `pandas` (TO-BE)
+    - BSD 3-Clause License
+  - `openpyxl` (TO-BE)
+    - MIT License
+- Database (TO-BE)
+- Redis (TO-BE)
+- JWT (TO-BE)
 
 ## Installation
 

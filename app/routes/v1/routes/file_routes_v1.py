@@ -1,13 +1,39 @@
 import boto3
-from fastapi import APIRouter, HTTPException, UploadFile, File, Depends, Form
+import codecs
+import csv
+import io
+import pandas as pd
+from enum import Enum
+from fastapi import Path, APIRouter, HTTPException, UploadFile, File, Depends, Form
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
+import pathlib
 
 router = APIRouter()
+
+
+# =========================================================
+# Settings
+# =========================================================
 
 # S3 Client Setting
 s3_client = boto3.client('s3')
 bucket_name = 'jonas-fastapi-master'  # Replace it to your real bucket 
+
+# File Type
+class FileType(Enum):
+    CSV         = ("CSV",           ".csv")
+    EXCEL       = ("EXCEL",         ".xlsx")
+    POWERPOINT  = ("POWERPOINT",    ".pptx")
+
+    def __new__(cls, key, extension):
+        obj = object.__new__(cls)
+        obj._value_ = key  # Use _value_ for the key
+        obj.key = key
+        obj.extension = extension
+        return obj
+    
+
 
 # =========================================================
 # API Request
@@ -17,6 +43,9 @@ class FileDownloadChunkRequest(BaseModel):
 
 class FileDownloadChunkFromS3Request(FileDownloadChunkRequest):
     pass
+
+class FileGenerateCsvRequest(FileDownloadChunkRequest):
+    pandas: bool = Field(default=False)
 
 
 # =========================================================
@@ -119,3 +148,103 @@ async def file_download_from_s3_in_chunk(filename: str, query: FileDownloadChunk
         raise HTTPException(status_code=404, detail="File not found in S3")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# =========================================================
+# Generate Files
+# =========================================================
+
+# File Generate CSV
+@router.get("/generate-csv/{filename}")
+async def file_generate_csv(
+    filename: str = Path(..., regex=r"^[\w,\s-]+\.[A-Za-z]{3}$"),
+    query: FileGenerateCsvRequest = Depends()
+):
+    # validate filename length
+    if len(filename) <= 4:
+        raise HTTPException(status_code=400, detail="Filename too short. It must be longer than the extension.")
+
+    # validate file extension name
+    file_extension = pathlib.Path(filename).suffix.casefold()
+    if file_extension != FileType.CSV.extension:
+        raise HTTPException(status_code=400, detail="Invalid file extension. Only .csv files are allowed.")
+    
+    # writer
+    output = io.BytesIO()
+    # writer = csv.writer(io.TextIOWrapper(output, newline='', encoding='utf-8')) # This doesn't work for all characters "WHEN YOU OPEN THE FILE USING EXCEL"
+    StreamWriter = codecs.getwriter('utf-8-sig')
+    wrapper_file = StreamWriter(output)
+    writer = csv.writer(wrapper_file)
+
+    # chunk read generator
+    def iter_file_chunks():
+        
+        # chunk read generator) data
+        headers = ["이름", "Age", "City"] # "이름" means "Name" to see if the utf-8 character works "WHEN YOU OPEN THE FILE USING EXCEL"
+        rows = [
+            {
+                headers[0]: "A",
+                headers[1]: 30,
+                headers[2]: "Los Angeles"
+            },
+            {
+                headers[0]: "B",
+                headers[1]: 24,
+                headers[2]: "Seoul"
+            },
+            {
+                headers[0]: "C",
+                headers[1]: 40,
+                headers[2]: "Paris"
+            }
+        ]
+        
+        # Max read line cnt
+        max_read_line_cnt = 2
+
+        # csv
+        if not query.pandas:
+
+            # The `output` using StringIO doesn't work for all characters "WHEN YOU OPEN THE FILE USING EXCEL"
+            # output = io.StringIO()
+            # writer = csv.writer(output)
+
+            print("[CSV - `csv`] generating a csv file with csv lib ...")
+            data = [headers]
+
+            for row in rows:
+                data_row = []
+                for header in headers:
+                    data_row.append(row.get(header))
+                data.append(data_row)
+            
+            for i in range(0, len(data), max_read_line_cnt):
+                writer.writerows(data[i:i+max_read_line_cnt])
+                output.seek(0)
+                yield output.read(query.chunk_size)
+                output.seek(0)
+                output.truncate(0)
+        
+        # pandas
+        else:
+            print("[CSV - `pandas`] generating a csv file with pandas lib ...")
+            data = {}
+            
+            for header in headers:
+                data_row = []
+                for row in rows:
+                    data_row.append(row.get(header))
+                data[header] = data_row
+            
+            df = pd.DataFrame(data)
+
+            for i in range(0, len(df), max_read_line_cnt):
+                df.iloc[i:i+max_read_line_cnt].to_csv(output, index=False, header=i==0, encoding='utf-8-sig') # headers only for the first chunk
+                output.seek(0)
+                yield output.read(query.chunk_size)
+                output.seek(0)
+                output.truncate(0)
+    try:
+        return StreamingResponse(iter_file_chunks(), media_type="text/csv")
+    except FileNotFoundError:
+        raise HTTPException(status_code=500, detail="Internal Server Error")
