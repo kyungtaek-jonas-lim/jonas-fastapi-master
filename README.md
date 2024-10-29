@@ -25,9 +25,17 @@ Handy components on AWS (ECS, ECR)
     - BSD 3-Clause License
   - `openpyxl` (TO-BE)
     - MIT License
-- Database (TO-BE)
-- Redis (TO-BE)
-- JWT (TO-BE)
+- Database (ORM) (TO-BE)
+  - `boto3` (Secrets Manager)
+    - Apache License 2.0
+  - `sqlalchemy`
+    - MIT License
+- Redis
+  - `redis`
+    - BSD 3-Clause License
+- JWT
+  - `python-jose`
+    - MIT License
 
 ## Installation
 
