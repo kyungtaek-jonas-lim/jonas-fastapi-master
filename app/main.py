@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes.base_routes import router
+from app.routes.base_routes import router_v1
 from app.config import current_config
 from app.scheduler import start_scheduler_async_io, start_scheduler_background, shutdown_scheduler
 
@@ -23,7 +23,7 @@ app.add_middleware(
 # Include routers
 # =========================================================
 
-app.include_router(router)
+app.include_router(router_v1, prefix="/v1")
 
 
 # =========================================================

@@ -121,3 +121,4 @@ dmypy.json
 # Etc (Please, remove it when you use them)
 buildspec.yml
 Dockerfile
+*.pem
