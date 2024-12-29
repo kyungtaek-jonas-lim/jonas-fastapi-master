@@ -1,19 +1,22 @@
 # Project Name
+### *`jonas-fastapi-master`*
 
-`jonas-fastapi-master` Handy components on AWS (ECS, ECR)
+## Author
+- **KyungTaek Lim (Jonas Lim)**
+- Software Engineer
+- **Email:** kyungtaekjonaslim@gmail.com
+- **LinkedIn:** [KyungTaek Jonas Lim](https://www.linkedin.com/in/kyungtaek-jonas-lim)
+- **GitHub:** [kyungtaek-jonas-lim](https://github.com/kyungtaek-jonas-lim)
 
 ## Table of Contents
-
 - [Introduction](#introduction)
 - [Features](#features)
 - [Installation](#installation)
 
 ## Introduction
-
 Handy components on AWS (ECS, ECR)
 
 ## Features
-
 - Async
 - Scheduler
   - `apscheduler`
@@ -48,7 +51,6 @@ Handy components on AWS (ECS, ECR)
     - RSA, HMAC, SHA3-256, Argon2, ECDSA 
 
 ## Installation
-
 Follow these instructions to set up your development environment.
   - rename `Dockerfile-sample` to `Dockerfile`
   - rename `buildspec-sample.yml` to `buildspec.yml`
