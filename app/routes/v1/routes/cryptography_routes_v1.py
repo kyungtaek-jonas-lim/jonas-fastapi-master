@@ -78,7 +78,8 @@ class EncryptSymmetricWithSaltRequest(EncryptSymmetricRequest):
     salt: str = Field(..., min_length=1)
 class EncryptAsymmetricRequest(EncryptRequest):
     pass
-    
+
+# Decrpyt Request Params
 class DecryptRequest(BaseModel):
     encrypted_value: str = Field(..., min_length=1)
 class DecryptSymmetricRequest(DecryptRequest):
@@ -210,16 +211,17 @@ def aes256_decrypt(key: str, encrypted_value: str) -> str:
 # Params: key, value, salt
 # return: encrypted_with_salt_value
 def aes256_encrypt_with_salt(key: str, value: str, salt: str) -> str:
-    key = (salt + key).encode()[:32]
-    return aes256_encrypt(key.decode(), value)
+    return aes256_encrypt(key, salt + value)
 
 
 # AES256 Decryption with Salt
 # Params: key, encrypted_value, salt
 # return: decrypted_value
 def aes256_decrypt_with_salt(key: str, encrypted_value: str, salt: str) -> str:
-    key = (salt + key).encode()[:32]
-    return aes256_decrypt(key.decode(), encrypted_value)
+    encrypted_value = aes256_decrypt(key, encrypted_value)
+    if encrypted_value and encrypted_value.startswith(salt):
+        return encrypted_value[len(salt):]
+    return encrypted_value
 
 
 # --------------
