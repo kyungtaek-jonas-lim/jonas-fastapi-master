@@ -39,6 +39,13 @@ Handy components on AWS (ECS, ECR)
 - Websocket
   - `websockets`
     - MIT License
+- Cryptography (SHA256, Bcrypt, AES256, RS256)
+  - `cryptography`
+    - Apache License 2.0
+  - `bcrypt`
+    - Apache License 2.0
+  - (TO-BE)
+    - RSA, HMAC, SHA3-256, Argon2, ECDSA 
 
 ## Installation
 
@@ -46,7 +53,7 @@ Follow these instructions to set up your development environment.
   - rename `Dockerfile-sample` to `Dockerfile`
   - rename `buildspec-sample.yml` to `buildspec.yml`
   - modify `AWS_ACCOUNT_ID`, `AWS_REGION`, `ECR_REPOSITORY_NAME`, `ECS_CONTAINER_NAME` in `buildspec.yml`
-  - generate `RSA` keys 
+  - generate `RSA` keys (Without Docker Container)
     ```bash
     if [ ! -f ./keys/private.pem ]; then \
     openssl genrsa -out ./keys/private.pem 2048; \

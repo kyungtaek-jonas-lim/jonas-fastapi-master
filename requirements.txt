@@ -7,3 +7,5 @@ pandas==2.0.3
 redis==5.1.1
 python-jose==3.3.0
 websockets==10.0
+cryptography==44.0.0
+bcrypt==4.2.1
