@@ -44,6 +44,9 @@ class FileDownloadChunkRequest(BaseModel):
 class FileDownloadChunkFromS3Request(FileDownloadChunkRequest):
     pass
 
+class FileStreamingDownloadChunkFromS3Request(FileDownloadChunkRequest):
+    pass
+
 class FileGenerateCsvRequest(FileDownloadChunkRequest):
     pandas: bool = Field(default=False)
 
@@ -84,6 +87,52 @@ async def file_upload_to_s3(file: UploadFile = File(...), s3_path: str = Form(..
     try:
         # Upload Files to S3
         s3_client.upload_fileobj(Fileobj=file.file, Bucket=bucket_name, Key=s3_path)
+        return FileUploadToS3Response(
+            status="File uploaded to S3 successfully",
+            filename=file.filename,
+            s3_path=s3_path
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# File Multipart Upload to S3
+@router.post("/multipart-upload-to-s3", response_model=FileUploadToS3Response)
+async def file_multipart_upload_to_s3(file: UploadFile = File(...), s3_path: str = Form(..., min_length=1, max_length=500), chunk_size: int = 5 * 1024 * 1024):
+    try:
+        # Initiate Multipart Upload
+        response = s3_client.create_multipart_upload(Bucket=bucket_name, Key=s3_path)
+        upload_id = response["UploadId"]
+
+        parts = []
+        part_number = 1
+
+        while True:
+            # Read the file in chunks
+            chunk = await file.read(chunk_size)
+            if not chunk:
+                break
+
+            # Upload the chunk as a part
+            response = s3_client.upload_part(
+                Bucket=bucket_name,
+                Key=s3_path,
+                PartNumber=part_number,
+                UploadId=upload_id,
+                Body=io.BytesIO(chunk)  # Convert chunk to stream
+            )
+
+            # Store part information
+            parts.append({"ETag": response["ETag"], "PartNumber": part_number})
+            part_number += 1
+
+        # Complete Multipart Upload
+        s3_client.complete_multipart_upload(
+            Bucket=bucket_name,
+            Key=s3_path,
+            UploadId=upload_id,
+            MultipartUpload={"Parts": parts}
+        )
+
         return FileUploadToS3Response(
             status="File uploaded to S3 successfully",
             filename=file.filename,
@@ -133,7 +182,7 @@ async def file_download_from_s3(filename: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# File Download from S3 in chunks
+# Download File from S3 in chunks
 @router.get("/download-from-s3-in-chunk/{filename}")
 async def file_download_from_s3_in_chunk(filename: str, query: FileDownloadChunkFromS3Request = Depends()):
     try:
@@ -144,6 +193,46 @@ async def file_download_from_s3_in_chunk(filename: str, query: FileDownloadChunk
             for chunk in s3_object['Body'].iter_chunks(query.chunk_size):
                 yield chunk
         return StreamingResponse(iterfile(), media_type="application/octet-stream")
+    except s3_client.exceptions.NoSuchKey:
+        raise HTTPException(status_code=404, detail="File not found in S3")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# File Streaming Download from S3 in chunks
+@router.get("/stream-download-from-s3-in-chunk/{filename}")
+async def file_stream_download_from_s3_in_chunk(filename: str, query: FileStreamingDownloadChunkFromS3Request = Depends()):
+    try:
+        def stream_s3_file(bucket_name: str, object_key: str):
+            # Get the size of the object
+            head_response = s3_client.head_object(Bucket=bucket_name, Key=object_key)
+            file_size = head_response['ContentLength']
+
+            # Set the chunk size (e.g., 5MB)
+            chunk_size = query.chunk_size
+
+            # Start position
+            start = 0
+
+            while start < file_size:
+                # Calculate the end position
+                end = min(start + chunk_size - 1, file_size - 1)
+
+                # Request only the specific range from S3
+                range_header = f"bytes={start}-{end}"
+                response = s3_client.get_object(Bucket=bucket_name, Key=object_key, Range=range_header)
+                
+                # Get the response body
+                body = response['Body']
+                chunk = body.read()  # Read chunk data
+                
+                # Stream the data to the client
+                yield chunk
+
+                # Update the start position for the next chunk
+                start += chunk_size
+
+        return StreamingResponse(stream_s3_file(bucket_name=bucket_name, object_key=filename), media_type="application/octet-stream")
     except s3_client.exceptions.NoSuchKey:
         raise HTTPException(status_code=404, detail="File not found in S3")
     except Exception as e:
