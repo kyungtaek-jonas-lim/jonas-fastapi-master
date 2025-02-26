@@ -17,11 +17,11 @@
 Handy components on AWS (ECS, ECR)
 
 ## Features
-- Async
-- Scheduler
+- [Async](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/async_routes_v1.py)
+- [Scheduler](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/scheduler.py)
   - `apscheduler`
     - MIT License
-- File
+- [File](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/file_routes_v1.py)
   - `boto3` (S3)
     - Apache License 2.0
   - `pandas` (TO-BE)
@@ -33,16 +33,16 @@ Handy components on AWS (ECS, ECR)
     - Apache License 2.0
   - `sqlalchemy`
     - MIT License
-- Redis
+- [Redis](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/redis_routes_v1.py)
   - `redis`
     - BSD 3-Clause License
-- JWT
+- [JWT](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/jwt_routes_v1.py)
   - `python-jose`
     - MIT License
-- Websocket
+- [Websocket](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/websocket_routes_v1.py)
   - `websockets`
     - MIT License
-- Cryptography (SHA256, Bcrypt, AES256, RS256)
+- [Cryptography (SHA256, Bcrypt, AES256, RS256)](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/cryptography_routes_v1.py)
   - `cryptography`
     - Apache License 2.0
   - `bcrypt`
