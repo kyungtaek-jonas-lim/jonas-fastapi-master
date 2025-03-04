@@ -57,7 +57,7 @@ class Config(metaclass=SingletonMeta):
     DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")
     SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey")
     ORIGIN = os.getenv(EnvVariables.ORIGIN.key, EnvVariables.ORIGIN.default)
-    SCHEDULER: bool = True if os.getenv(EnvVariables.SCHEDULER.key, EnvVariables.SCHEDULER.default) and os.getenv(EnvVariables.SCHEDULER.key, EnvVariables.SCHEDULER.default).lower() == "true" else False
+    SCHEDULER: bool = False if os.getenv(EnvVariables.SCHEDULER.key, EnvVariables.SCHEDULER.default) and os.getenv(EnvVariables.SCHEDULER.key, EnvVariables.SCHEDULER.default).lower() == "true" else False
 
     def __str__(self):
         # Define the string representation of the Config object
