@@ -3,6 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routes.base_routes import router_v1
 from app.config import current_config
 from app.scheduler import start_scheduler_async_io, start_scheduler_background, shutdown_scheduler
+from app.kafka.config import KafkaConfig
+from app.kafka.producer import get_kafka_producer
+from app.kafka.consumer import consume
+import asyncio
 
 app = FastAPI()
 
@@ -52,6 +56,11 @@ async def startup_event():
         start_scheduler_background()
     else:
         print("Schedulers are deactivated")
+    
+    # Create Kafka Consumer
+    if KafkaConfig.ON.value:
+        await get_kafka_producer()
+        asyncio.create_task(consume())
 
 @app.on_event("shutdown")
 async def shutdown_event():

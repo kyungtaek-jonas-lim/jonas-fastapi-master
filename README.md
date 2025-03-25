@@ -48,7 +48,10 @@ Handy components on AWS (ECS, ECR)
   - `bcrypt`
     - Apache License 2.0
   - (TO-BE)
-    - RSA, HMAC, SHA3-256, Argon2, ECDSA 
+    - RSA, HMAC, SHA3-256, Argon2, ECDSA
+- [Kafka](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/kafka_routes_v1.py)
+  - `aiokafka`
+    - Apache License 2.0
 
 ## Installation
 Follow these instructions to set up your development environment.
@@ -71,3 +74,31 @@ Follow these instructions to set up your development environment.
    git clone https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master.git
    cd jonas-fastapi-master
    ```
+
+2. **Run Kafka (Windows):**
+    1. [Install](https://kafka.apache.org/downloads)
+
+    2. Run Zookeeper
+    ```bash
+    .\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
+    ```
+
+    3. Run Kafka Server (On a new tab)
+    ```bash
+    .\bin\windows\kafka-server-start.bat .\config\server.properties
+    ```
+
+    4. Create Topic (On a new tab)
+    ```bash
+    .\bin\windows\kafka-topics.bat --create --topic my-topic --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+    ```
+
+    5. Run Producer
+    ```bash
+    .\bin\windows\kafka-console-producer.bat --topic my-topic --bootstrap-server localhost:9092
+    ```
+
+    6. Run Consumer (On a new tab)
+    ```bash
+    .\bin\windows\kafka-console-consumer.bat --topic my-topic --from-beginning --bootstrap-server localhost:9092
+    ```

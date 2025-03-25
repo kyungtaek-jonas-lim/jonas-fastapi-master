@@ -1,3 +1,4 @@
+import os
 import redis
 from enum import Enum
 from fastapi import APIRouter, HTTPException, Path, Depends
@@ -12,10 +13,10 @@ router = APIRouter()
 # =========================================================
 
 redis_client = redis.StrictRedis(
-    host='host.docker.internal', # replace to the host of Redis service
-    port=6379,
-    db=0, # db index (up to 15)
-    decode_responses=True # True: string to UTF-8 (str type in python)
+    host=os.getenv('REDIS_HOST', 'host.docker.internal'), # replace to the host of Redis service
+    port=int(os.getenv('REDIS_PORT', 6379)),
+    db=int(os.getenv('REDIS_DB_INDEX', 0)), # db index (up to 15)
+    decode_responses=True if os.getenv('REDIS_DECODE_RESPONSES', 'True') == 'True' else False # True: string to UTF-8 (str type in python)
 )
 
 LOCK_TIMEOUT = 5

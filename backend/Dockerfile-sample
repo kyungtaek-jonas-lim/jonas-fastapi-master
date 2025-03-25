@@ -10,16 +10,20 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     SCHEDULER=True \
     AWS_ACCESS_KEY_ID=<your_access_key> \
     AWS_SECRET_ACCESS_KEY=<your_secret_key>
-    # AWS_S3_BUCKET_NAME=<your_s3_bucket_name> \ # Not implemented
-    # REDIS_HOST='host.docker.internal' \ # Not implemented
-    # REDIS_PORT=6379 \ # Not implemented
-    # REDIS_DB_INDEX=0 \ # Not implemented
-    # REDIS_DECODE_RESPONSES=Ture \ # Not implemented
+    # AWS_S3_BUCKET_NAME=<your_s3_bucket_name> \
+    # REDIS_HOST='host.docker.internal' \
+    # REDIS_PORT=6379 \
+    # REDIS_DB_INDEX=0 \
+    # REDIS_DECODE_RESPONSES=Ture \
     # DATABASE_URL= \
     # SECRET_KEY= \
     # DEV_DATABASE_URL= \
     # TEST_DATABASE_URL= \
-    # PROD_DATABASE_URL=
+    # PROD_DATABASE_URL= \
+    # KAFKA_ON=False \
+    # KAFKA_TOPIC=<your-topic> \
+    # KAFKA_BOOTSTRAP_SERVERS=<your-bootstrap-server> \
+    # KAFKA_GROUP_ID=<your-group-id>
 
 # Set the working directory in the container
 WORKDIR /app

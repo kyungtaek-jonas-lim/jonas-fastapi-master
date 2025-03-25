@@ -2,6 +2,7 @@ import boto3
 import codecs
 import csv
 import io
+import os
 import pandas as pd
 from enum import Enum
 from fastapi import Path, APIRouter, HTTPException, UploadFile, File, Depends, Form
@@ -18,7 +19,7 @@ router = APIRouter()
 
 # S3 Client Setting
 s3_client = boto3.client('s3')
-bucket_name = 'jonas-fastapi-master'  # Replace it to your real bucket 
+bucket_name = os.getenv("AWS_S3_BUCKET_NAME", 'jonas-fastapi-master')  # Replace it to your real bucket 
 
 # File Type
 class FileType(Enum):
