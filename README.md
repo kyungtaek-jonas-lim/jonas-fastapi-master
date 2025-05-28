@@ -102,3 +102,10 @@ Follow these instructions to set up your development environment.
     ```bash
     .\bin\windows\kafka-console-consumer.bat --topic my-topic --from-beginning --bootstrap-server localhost:9092
     ```
+  
+3. **Start Backend:**
+   ```bash
+   cd backend
+   uvicorn app.main:app --port 8000
+   # If you don't want Kafka, please change the value of `KafkaConfig.ON` in the file, 'backend/app/kafka/config.py'
+   ```
