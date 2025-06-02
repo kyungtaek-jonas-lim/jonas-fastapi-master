@@ -39,6 +39,9 @@ Handy components on AWS (ECS, ECR)
 - [JWT](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/jwt_routes_v1.py)
   - `python-jose`
     - MIT License
+- [MongoDB](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/mongodb_routes_v1.py)
+  - `motor` (3.6.1)
+    - Apache License 2.0
 - [Websocket](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/websocket_routes_v1.py)
   - `websockets`
     - MIT License
@@ -106,6 +109,6 @@ Follow these instructions to set up your development environment.
 3. **Start Backend:**
    ```bash
    cd backend
-   uvicorn app.main:app --port 8000
-   # If you don't want Kafka, please change the value of `KafkaConfig.ON` in the file, 'backend/app/kafka/config.py'
+   python -m uvicorn app.main:app --port 8000
+   # If you want Kafka, please change the value of `KafkaConfig.ON` in the file, 'backend/app/kafka/config.py'
    ```
