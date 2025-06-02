@@ -4,8 +4,10 @@ from enum import Enum
 from fastapi import APIRouter, HTTPException, Path, Depends
 from pydantic import BaseModel, Field
 from typing import Optional
+import threading
 
 router = APIRouter()
+log_prefix = "[REDIS]"
 
 
 # =========================================================
@@ -14,6 +16,7 @@ router = APIRouter()
 
 redis_client = redis.StrictRedis(
     host=os.getenv('REDIS_HOST', 'host.docker.internal'), # replace to the host of Redis service
+    # host=os.getenv('REDIS_HOST', '127.0.0.1'), # If it's local
     port=int(os.getenv('REDIS_PORT', 6379)),
     db=int(os.getenv('REDIS_DB_INDEX', 0)), # db index (up to 15)
     decode_responses=True if os.getenv('REDIS_DECODE_RESPONSES', 'True') == 'True' else False # True: string to UTF-8 (str type in python)
@@ -52,6 +55,10 @@ class RedisSetRequest(RedisRequest):
 class RedisHashRequest(RedisRequest):
     fields: dict = Field(...)
 
+class PubSubMessage(BaseModel):
+    channel: str = Field(...)
+    message: str = Field(...)
+
 
 # =========================================================
 # API Response
@@ -69,6 +76,11 @@ class RedisSetResponse(RedisResponse):
 
 class RedisHashResponse(RedisResponse):
     fields: Optional[dict] = Field(None)
+
+class PubSubResponse(BaseModel):
+    status: str = Field(...)
+    channel: str = Field(...)
+    message: str = Field(...)
 
 
 # =========================================================
@@ -364,3 +376,38 @@ async def delete_hash(key: str = Path(..., min_length=1)):
             key=key
         )
     raise HTTPException(status_code=404, detail="Key not found")
+
+
+# =========================================================
+# Redis PUB/SUB API
+# =========================================================
+
+@router.post("/pubsub/publish", response_model=PubSubResponse)
+async def publish_message(payload: PubSubMessage):
+    print(f"{log_prefix} Redis Pub/Sub - Publish - channel: '{payload.channel}', message: '{payload.message}'")
+    redis_client.publish(payload.channel, payload.message)
+    return PubSubResponse(status="published", channel=payload.channel, message=payload.message)
+
+subscribed_messages = []
+
+def listen_to_channel(channel_name: str):
+    pubsub = redis_client.pubsub()
+    pubsub.subscribe(channel_name)
+    for message in pubsub.listen():
+        print(f"{log_prefix} Redis Pub/Sub - Succeeded in subscribing - channel: '{channel_name}'")
+        if message['type'] == 'message':
+            subscribed_messages.append({
+                'channel': channel_name,
+                'message': message['data']
+            })
+
+@router.post("/pubsub/subscribe/{channel}", response_model=dict)
+async def subscribe_channel(channel: str):
+    print(f"{log_prefix} Redis Pub/Sub - Subscribe - channel: {channel}")
+    threading.Thread(target=listen_to_channel, args=(channel,), daemon=True).start()
+    return {"status": "subscribed", "channel": channel}
+
+@router.get("/pubsub/messages", response_model=list)
+async def get_subscribed_messages():
+    print(f"{log_prefix} Redis Pub/Sub - All Messages - messages: '{subscribed_messages}'")
+    return subscribed_messages

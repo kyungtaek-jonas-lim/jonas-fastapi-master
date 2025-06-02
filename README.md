@@ -18,43 +18,39 @@ Handy components on AWS (ECS, ECR)
 
 ## Features
 - [Async](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/async_routes_v1.py)
+  - I/O Bound
+  - CPU Bound
 - [Scheduler](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/scheduler.py)
-  - `apscheduler`
-    - MIT License
+  - `apscheduler==3.10.4` (MIT License)
 - [File](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/file_routes_v1.py)
-  - `boto3` (S3)
-    - Apache License 2.0
-  - `pandas` (TO-BE)
-    - BSD 3-Clause License
-  - `openpyxl` (TO-BE)
-    - MIT License
-- Database (ORM) (TO-BE)
-  - `boto3` (Secrets Manager)
-    - Apache License 2.0
-  - `sqlalchemy`
-    - MIT License
+  - `boto3==1.35.30` (S3) (Apache License 2.0)
+  - `pandas==2.0.3` (BSD 3-Clause License) (TO-BE)
+  <!-- - `openpyxl` (MIT License) (TO-BE) -->
+<!-- - Database (ORM) (TO-BE)
+  - `boto3==1.35.30` (Secrets Manager) (Apache License 2.0)
+  - `sqlalchemy` (MIT License) -->
 - [Redis](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/redis_routes_v1.py)
-  - `redis`
-    - BSD 3-Clause License
+  - Key/Value Store
+  - Pub/Sub
+  - `redis==5.1.1` (BSD 3-Clause License)
 - [JWT](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/jwt_routes_v1.py)
-  - `python-jose`
-    - MIT License
+  - `python-jose==3.3.0` (MIT License)
 - [MongoDB](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/mongodb_routes_v1.py)
-  - `motor` (3.6.1)
-    - Apache License 2.0
+  - CRUD
+  - `motor==3.6.1` (Apache License 2.0)
 - [Websocket](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/websocket_routes_v1.py)
-  - `websockets`
-    - MIT License
-- [Cryptography (SHA256, Bcrypt, AES256, RS256)](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/cryptography_routes_v1.py)
-  - `cryptography`
-    - Apache License 2.0
-  - `bcrypt`
-    - Apache License 2.0
-  - (TO-BE)
-    - RSA, HMAC, SHA3-256, Argon2, ECDSA
+  - `websockets==10.0` (MIT License)
+- [Cryptography](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/cryptography_routes_v1.py)
+  - SHA256
+  - Bcrypt
+  - AES256
+  - RS256
+  - `cryptography==44.0.0` (Apache License 2.0)
+  - `bcrypt==4.2.1` (Apache License 2.0)
+  <!-- - (TO-BE)
+    - RSA, HMAC, SHA3-256, Argon2, ECDSA -->
 - [Kafka](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/kafka_routes_v1.py)
-  - `aiokafka`
-    - Apache License 2.0
+  - `aiokafka==0.11.0` (Apache License 2.0)
 
 ## Installation
 Follow these instructions to set up your development environment.
