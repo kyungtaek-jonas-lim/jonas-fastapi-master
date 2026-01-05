@@ -151,7 +151,14 @@ async def file_multipart_upload_to_s3(file: UploadFile = File(...), s3_path: str
 @router.get("/download/{filename}")
 async def file_download(filename: str):
     try:
-        return StreamingResponse(open(filename, "rb"), media_type="application/octet-stream")
+        def iter_file():
+            with open(filename, "rb") as file:
+                yield from file
+
+        return StreamingResponse(
+            iter_file(),
+            media_type="application/octet-stream"
+        )
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="File not found")
 
