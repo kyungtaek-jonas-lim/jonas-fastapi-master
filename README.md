@@ -108,3 +108,8 @@ Follow these instructions to set up your development environment.
    python -m uvicorn app.main:app --port 8000
    # If you want Kafka, please change the value of `KafkaConfig.ON` in the file, 'backend/app/kafka/config.py'
    ```
+
+4. **Start Frontkend:**
+    ```bash
+    npm run dev -- --port 3000
+    ```

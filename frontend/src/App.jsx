@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-// import FileTab from './tabs/FileTab';
+import FileTab from './tabs/FileTab';
 import WebSocketTab from './tabs/WebSocketTab';
-// import JwtTab from './tabs/JwtTab';
+import JwtTab from './tabs/JwtTab';
 // import AsyncTab from './tabs/AsyncTab';
 // import CryptographyTab from './tabs/CryptographyTab';
 // import RedisTab from './tabs/RedisTab';
@@ -31,10 +31,10 @@ function App() {
   return (
     <div>
       <div className="tabs">
-        {/* <button onClick={() => setActiveTab("file")}>File</button> */}
+        {<button onClick={() => setActiveTab("file")}>File</button>}
         <button onClick={() => setActiveTab("websocket")}>WebSocket</button>
-        {/* <button onClick={() => setActiveTab("jwt")}>JWT</button>
-        <button onClick={() => setActiveTab("async")}>Async</button>
+        <button onClick={() => setActiveTab("jwt")}>JWT</button>
+        {/* <button onClick={() => setActiveTab("async")}>Async</button>
         <button onClick={() => setActiveTab("cryptography")}>Cryptography</button>
         <button onClick={() => setActiveTab("redis")}>Redis</button> */}
       </div>
