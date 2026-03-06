@@ -51,6 +51,9 @@ Handy components on AWS (ECS, ECR)
     - RSA, HMAC, SHA3-256, Argon2, ECDSA -->
 - [Kafka](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/kafka_routes_v1.py)
   - `aiokafka==0.11.0` (Apache License 2.0)
+- [Selenium](https://github.com/kyungtaek-jonas-lim/jonas-fastapi-master/blob/main/backend/app/routes/v1/routes/selenium_routes_v1.py)
+  - `selenium==4.27.1` (Apache License 2.0)
+  - `chromedriver-autoinstaller==0.6.4` (MIT License)
 
 ## Installation
 Follow these instructions to set up your development environment.
